@@ -40,7 +40,7 @@ Pr[A(o’) = x] &= (1 - p) + \frac{p}{k} \\
 So
 ```math
 \begin{align*}
-\frac{p}{k} &\le e^{\epsilon} ((1 - p) + \frac{p}{k}) \\ 
+\frac{p}{k} &\le e^{\epsilon} \left((1 - p) + \frac{p}{k}\right) \\ 
 \frac{p}{(k + p - k p)} &\le e^{\epsilon} \\
 \end{align*}
 ```
@@ -50,9 +50,9 @@ $\forall k > 0, p \in [0, 1]:  k + p - kp \ge p$, so
 ```math
 \begin{align*}
 e^\epsilon &\ge \frac{(k + p - kp)}{p} \\
-\epsilon &\ge ln(\frac{(k + p - kp)}{p}) \text{ so}\\
+\epsilon &\ge ln\left(\frac{(k + p - kp)}{p}\right) \\
 \end{align*}
 ```
 
-Therefore setting $p \le \frac{k}{k - 1 + e^\epsilon}$ with the k-ary randomized response mechanism satisfies $\epsilon$-differential privacy.
+Solving for $p$ we can show that k-ary randomized response with $p \le \frac{k}{k - 1 + e^\epsilon}$ satisfies $\epsilon$-differential privacy.
 
