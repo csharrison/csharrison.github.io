@@ -14,11 +14,9 @@ Pr[A(D) = x] \le e^\epsilon Pr[A(D’) = x]
 ```
 For $D$ and $D’$ datasets that differ on one row / user, a privacy mechanism $A$, and any output $x$. Because k-RR is a local differentially private mechanism (i.e. it operates on only a single row), we can assume $D$ and $D’$ differ only in that they are different elements of the `possible_outputs` set. Call that set $O$, and the differing inputs $o$ and $o’$.
 
-It is obvious that if $o \ne x$ and $o’ \ne x$, the inequality holds, and in fact without the $e^\epsilon$ term it’s an equality.
+It is obvious that if $o \ne x$ and $o’ \ne x$, the inequality holds. It suffices to show then that the inequality holds when either $o = x$ or $o’ = x$.
 
-It suffices to show that the inequality holds when either $o = x$ or $o’ = x$.
-
-### $o = x$ and $o’ \ne x$
+### Case 1. $o = x$ and $o’ \ne x$
 ```math
 \begin{align*}
 Pr[A(o) = x] &= (1 - p) + \frac{p}{k} \\
@@ -32,7 +30,7 @@ So
 \frac{(k + p - k p)}{p} &\le e^{\epsilon} \\
 \end{align*}
 ```
-### $o \ne x$ and $o’ = x$
+### Case 2. $o \ne x$ and $o’ = x$
 ```math
 \begin{align*}
 Pr[A(o) = x] &= \frac{p}{k} \\
@@ -56,5 +54,5 @@ e^\epsilon &\ge \frac{(k + p - kp)}{p} \\
 \end{align*}
 ```
 
-Therefore $p \le \frac{k}{k - 1 + e^\epsilon}$ satisfies $\epsilon$-differential privacy.
+Therefore setting $p \le \frac{k}{k - 1 + e^\epsilon}$ with the k-ary randomized response mechanism satisfies $\epsilon$-differential privacy.
 
