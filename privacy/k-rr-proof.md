@@ -1,14 +1,17 @@
 # K-ary randomized response
 K-ary randomized response is a privacy mechanism with the following algorithm:
 ```python
-def kary_rr(p: float, input: Any, possible_outputs: Set[Any]) -> Any:
+import math
+import random
+def kary_rr(epsilon: float, input: Any, possible_outputs: Set[Any]) -> Any:
+  p = k / (k - 1 + math.exp(epsilon))
   assert input in possible_outputs
   If random.random() <= p:
     return random.choice(possible_outputs)
   return input
 ```
 
-This algorithm satisfies $\epsilon$-differential privacy. In this post I will present a proof. Recall the definition of differential privacy:
+This algorithm satisfies $\epsilon$-differential privacy. In this post I will present a simple proof. Recall the definition of differential privacy:
 ```math
 Pr[A(D) = x] \le e^\epsilon Pr[A(D’) = x]
 ```
@@ -16,43 +19,14 @@ For $D$ and $D’$ datasets that differ on one row / user, a privacy mechanism $
 
 It is obvious that if $o \ne x$ and $o’ \ne x$, the inequality holds. It suffices to show then that the inequality holds when either $o = x$ or $o’ = x$.
 
-### Case 1. $o = x$ and $o’ \ne x$
 ```math
 \begin{align*}
-Pr[A(o) = x] &= (1 - p) + \frac{p}{k} \\
-Pr[A(o') = x] &= \frac{p}{k} \\
-\end{align*}
-```
-So
-```math
-\begin{align*}
-(1 - p) + \frac{p}{k} &\le e^{\epsilon} \frac{p}{k} \\ 
-\frac{(k + p - k p)}{p} &\le e^{\epsilon} \\
-\end{align*}
-```
-### Case 2. $o \ne x$ and $o’ = x$
-```math
-\begin{align*}
-Pr[A(o) = x] &= \frac{p}{k} \\
-Pr[A(o’) = x] &= (1 - p) + \frac{p}{k} \\
-\end{align*}
-```
-So
-```math
-\begin{align*}
-\frac{p}{k} &\le e^{\epsilon} \left((1 - p) + \frac{p}{k}\right) \\ 
-\frac{p}{(k + p - k p)} &\le e^{\epsilon} \\
-\end{align*}
-```
-### Putting it together
-
-$\forall k > 0, p \in [0, 1]:  k + p - kp \ge p$, so
-```math
-\begin{align*}
-e^\epsilon &\ge \frac{(k + p - kp)}{p} \\
-\epsilon &\ge ln\left(\frac{(k + p - kp)}{p}\right) \\
+\frac{Pr[A(o) = x]}{Pr[A(o') = x]} &\le \frac{Pr[A(x) = x]}{Pr[A(o') = x]} &&\text{ for $o' \ne x$}\\
+&= \frac{(1 - p) + \frac{p}{k}}{\frac{p}{k}} \\
+&= \frac{k}{p} - k + 1 \\
+&= k \frac{k - 1 + e^\epsilon}{k} - k + 1 \\
+&= e^\epsilon
 \end{align*}
 ```
 
-Solving for $p$ we can show that k-ary randomized response with $p \le \frac{k}{k - 1 + e^\epsilon}$ satisfies $\epsilon$-differential privacy.
-
+The first inequality follows from the simple observation that the mechanism will always output the true input with higher probability than any other output.
