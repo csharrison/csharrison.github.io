@@ -34,7 +34,7 @@ For $D$ and $D’$ neighoring datasets (that differ on one row / user), a privac
 
 Because RAPPOR is a local differentially private mechanism (i.e. it operates on only a single row), we can assume $D$ and $D’$ differ
 only in `value`. For any value of $x$ we choose, $A(D)$ will need to set two bits differently from how $A(D')$ sets them. In other words,
-where $A(D)$ leaves the bit unchanged, $A(D')$ must flip the bit. Where $A(D)$ flips teh bit, $A(D')$ must leave the bit unchanged.
+where $A(D)$ leaves the bit unchanged, $A(D')$ must flip the bit. Where $A(D)$ flips the bit, $A(D')$ must leave the bit unchanged.
 
 As an example: take $D = 0$, $D' = 1$, and $x = [1, 0, 0, ...]$. It is clear that for $A(D') = x$ the first two bits need to be flipped, unlike in $A(D)$
 where they are left unchanged.
