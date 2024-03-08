@@ -33,8 +33,13 @@ Pr[A(D) = x] \le e^\epsilon Pr[A(D’) = x]
 For $D$ and $D’$ neighoring datasets (that differ on one row / user), a privacy mechanism $A$, and any output $x$.
 
 Because RAPPOR is a local differentially private mechanism (i.e. it operates on only a single row), we can assume $D$ and $D’$ differ
-only in `value`. For any value of $x$ we choose, $A(D)$ will need to set two bits differently from $A(D')$. Therefore the ratio
-of $\frac{Pr[A(D) = x]}{Pr[A(D') = x]}$ is maximized when the $D'$ flips those two bits with probability $f/2$, since $f/2 \le 1 - f/2$.
+only in `value`. For any value of $x$ we choose, $A(D)$ will need to set two bits differently from how $A(D')$ sets them. In other words,
+where $A(D)$ leaves the bit unchanged, $A(D')$ must flip the bit. Where $A(D)$ flips teh bit, $A(D')$ must leave the bit unchanged.
+
+As an example: take $D = 0$, $D' = 1$, and $x = [1, 0, 0, ...]$. It is clear that for $A(D') = x$ the first two bits need to be flipped, unlike in $A(D)$
+where they are left unchanged.
+
+Therefore the ratio of $\frac{Pr[A(D) = x]}{Pr[A(D') = x]}$ is maximized when the $D'$ flips those two bits with probability $f/2$, since $f/2 \le 1 - f/2$.
 
 ```math
 \begin{align*}
