@@ -10,6 +10,8 @@ The Laplace mechanism operates in the setting of vector aggregation.
 The input is a vector $V \in \mathbb{R}^d$ with a fixed $l_1$ sensitivity $\Delta$: for neighboring datasets $D, D' \in \mathbb{R}^d$,
 $||D-D'||_1 \le \Delta$. In other words, each user can only contribute $\Delta$ across all of the $d$ buckets in the vector.
 
+The mechanism simply adds to each vector coordinate independent noise sampled from the Laplace distribution with $b = \Delta/\epsilon$ and $\mu = 0$.
+
 Here is a buggy implementation of the Laplace mechanism in python:
 ```python
 import scipy
