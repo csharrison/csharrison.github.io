@@ -10,7 +10,7 @@ def rappor(value: int, domain_size: int, epsilon: float):
   Arguments:
   value -- the value to randomize. Must be an integer between 0 and domain_size - 1
   domain_size -- a positive integer > 1
-  epsilon: the privacy loss parameter.
+  epsilon -- the privacy loss parameter.
   """
   # Generate a one-hot vector of length `histogram_length`
   # All zeros except for the `value`th entry.
