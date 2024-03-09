@@ -12,6 +12,9 @@ def discrete_laplace_mech(v, sensitivity, epsilon):
 ```
 
 The Discrete Laplace mechanism satisfies $\epsilon$-differential privacy. The proof is nearly identical to the [proof of the normal Laplace mechanism](laplace-proof.md).
+The only difference is the $tanh\left(\frac{a}{2}\right)$ factor in the PMF, which is different from the $\frac{1}{2 b}$ factor in the Laplace distribution because
+the discrete Laplace only operates on the integers. These factors drop out immediately in the proof.
+
 Recall the definition of differential privacy:
 ```math
 Pr[A(D) = x] \le e^\epsilon Pr[A(D’) = x]
