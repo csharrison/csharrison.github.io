@@ -26,9 +26,9 @@ For $D$ and $D’$ neighoring datasets (that differ on one row / user), a privac
 &= \prod_i exp(-a |x-D_i| + a|x - D'_i|) \\
 &= \prod_i exp(a (|x - D'_i| - |x-D_i|)) \\
 &\le \prod_i exp(a (|D_i - D'_i|)) &&\text{by triangle inequality}\\
-&= exp(a \sum_i |D_i - D'_i|) \\
-&\le exp(a \Delta) &&\text{by $l_1$ sensitivity}\\
-&= exp(\frac{\epsilon}{\Delta} \Delta) \\
+&= exp\left(a \sum_i |D_i - D'_i|\right) \\
+&\le exp\left(a \Delta\right) &&\text{by $l_1$ sensitivity}\\
+&= exp\left(\frac{\epsilon}{\Delta} \Delta\right) \\
 &= e^\epsilon \\
 \end{align*}
 ```
