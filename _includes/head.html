@@ -1,0 +1,30 @@
+<!-- Mostly copied from the minima head.html file -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- seo -%}
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+  {%- endif -%}
+
+  <!-- For math support. Only include this snippet conditionally since it could incur extra network requests.
+       TODO: for browsers that support MathML natively, we can probably speed up page loads by converting the
+       LaTEX to MathML in a preprocessing step.
+
+       The tex-svg.js library below (@3.1) is nearly 700kb, and also adds a dependency on the jsdelivr CDN.
+  -->
+  {% if page.needsmath %}
+  <script>
+    MathJax = {
+      tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+  </script>
+{% endif %}
+</head>
