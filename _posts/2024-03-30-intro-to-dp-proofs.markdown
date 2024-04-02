@@ -5,7 +5,7 @@ date:   2024-03-30
 needsmath: true
 ---
 
-Differential privacy is a robust, formal notion of privacy. For a friendly introduction, it is difficult to beat
+Differential privacy is a robust, formal notion of privacy. For a friendly introduction, it's difficult to beat
 this [blog post series](https://desfontain.es/privacy/friendly-intro-to-differential-privacy.html) by Damien Desfontaines.
 In this post I'll assume a basic familiarity with the concept, and dive into a few examples of _proving_ that mechanisms are differentially private. I've found that getting a handle on a few simple proofs helps build a better intuition for how differential privacy works.
 
