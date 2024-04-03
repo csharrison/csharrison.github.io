@@ -20,7 +20,7 @@
 
 title: Charlie Harrison
 description: >- # this means to ignore newlines until "baseurl:"
-  Writing about software, privacy, and anything else I'm thinking about at the moment.
+  Writing about software, privacy, and anything else I'm learning about.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: const_charlie
