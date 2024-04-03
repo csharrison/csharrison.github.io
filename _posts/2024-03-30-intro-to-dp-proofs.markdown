@@ -13,18 +13,7 @@ In this post I'll assume a basic familiarity with the concept, and dive into a f
 This is the definition of differential privacy:
 
 $$
-\begin{align}
-a_1& =b_1+c_1\\
-a_2& =b_2+c_2-d_2+e_2
-\end{align}
-$$
-
-
-$$
-\begin{align*}
-a_1& =b_1+c_1\\
-a_2& =b_2+c_2-d_2+e_2
-\end{align*}
+Pr[A(D) \in S] \le e^\epsilon Pr[A(D’) \in S]
 $$
 
 For all neighboring datasets $D$ and $D’$ (that differ on one row / user), a privacy mechanism $A$, and all (measureable) subsets $S \subseteq image(A)$.
