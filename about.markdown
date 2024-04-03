@@ -9,4 +9,4 @@ Lately, I've been focused on methods to make online advertising more private thr
 
 I expect to write about topics I'm learning about, which these days are usually privacy related. Views expressed here are my own.
 
-This blog's source can be found at [https://github.com/csharrison/csharrison.github.io](github.com/csharrison/csharrison.github.io). Feel free to use [github issues](https://github.com/csharrison/csharrison.github.io/issues) to comment or file feedback.
+This blog's source can be found at [github.com/csharrison/csharrison.github.io](https://github.com/csharrison/csharrison.github.io). Feel free to use [github issues](https://github.com/csharrison/csharrison.github.io/issues) to comment or file feedback.
