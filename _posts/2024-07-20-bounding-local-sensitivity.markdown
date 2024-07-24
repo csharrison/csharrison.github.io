@@ -190,7 +190,7 @@ the three queries completes the proof[^4].
 
 ## Some empirical results
 
-We first plot the mean absolute error of the naive approach vs. our local sensitivity attempt, across 100,000 trials.
+We first plot[^5] the mean absolute error of the naive approach vs. our local sensitivity attempt, across 100,000 trials.
 
 ![Figure 1](/images/mae-1.svg)
 
@@ -241,3 +241,5 @@ on this topic for inspiration.
     $b/2$.
 
 [^4]: We skip some details for the "bailing out" approach when $b_l \le 1$, but it should be clear this path is also $(\epsilon_1 + \epsilon_2)$-DP from basic composition.
+
+[^5]: Plots generated in [this colab notebook](https://colab.research.google.com/drive/14z-rLkL1pTt9CYQbCoOvwDYdJM0GnDvH?usp=sharing)
