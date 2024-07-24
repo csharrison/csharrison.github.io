@@ -31,7 +31,7 @@ The general approach we will take is to _privately_ measure an upper bound on $L
 noise according to $\hat{\Delta}$.
 
 <a href="#thm1" id='thm1'>Theorem 1:</a> Let $Pr[g(f, x) \le LS(f, x)] \ge 1-\delta$ for some $\epsilon_1$-differentially private function $g$
-that estimates the upper bound of the local sensitivity. Than computing the Laplace mechanism over $f$ with scale
+that estimates the upper bound of the local sensitivity. The Laplace mechanism over $f$ with scale
 parameter $g(f, x) / \epsilon_2$ satisfies $(\epsilon_1 + \epsilon_2, \delta)$-differential privacy.
 
 **Proof:** Recall the typical proof for the Laplace mechanism:
@@ -42,15 +42,19 @@ $$
 &= \prod_{i} exp\left(\frac{|x-D'_i| - |x - D_i|}{b}\right) \\
 &\le \prod_{i} exp\left(\frac{|D_i-D'_i|}{b}\right) &&\text{by triangle inequality}\\
 &\le exp\left(\frac{1}{b} LS(f, D) \right)\\
+&\le exp\left(\frac{1}{b} g(f, D) \right) && \text{conditioned on the event that $LS(f, D) \le g(f, D)$}\\
+&= e^{\epsilon_2}
 \end{align*}
 $$
 
-And since we know that $Pr(g(f, D) \le LS(f, D)) \le \delta$:
+And so, conditioning on the event $E$ that $LS(f, D) \le g(f, D)$:
 
 $$
 \begin{align*}
-Pr[A(D) \in S] &\le Pr[g(f, D) \ge LS(f, D)] exp\left(\frac{1}{b} g(f, D)\right) Pr[A(D') \in S] + Pr[g(f, D) \lt LS(f, D)]\\
-&\le e^{\epsilon_2} Pr[A(D') \in S] + \delta
+Pr[A(D) \in S] &= Pr[A(D) \in S | E] Pr(E) + Pr[A(D) \in S | \neg E] Pr(\neg E)\\
+&\le Pr[A(D) \in S | E] Pr(E) + \delta\\
+&\le Pr[A(D') \in S | E] Pr(E) + \delta\\
+&\le Pr[A(D') \in S] + \delta
 \end{align*}
 $$
 
