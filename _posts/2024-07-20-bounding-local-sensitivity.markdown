@@ -53,8 +53,8 @@ $$
 \begin{align*}
 Pr[A(D) \in S] &= Pr[A(D) \in S | E] Pr(E) + Pr[A(D) \in S | \neg E] Pr(\neg E)\\
 &\le Pr[A(D) \in S | E] Pr(E) + \delta\\
-&\le Pr[A(D') \in S | E] Pr(E) + \delta\\
-&\le Pr[A(D') \in S] + \delta
+&\le e^{\epsilon_2} Pr[A(D') \in S | E] Pr(E) + \delta\\
+&\le e^{\epsilon_2} Pr[A(D') \in S] + \delta
 \end{align*}
 $$
 
