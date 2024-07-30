@@ -1,0 +1,284 @@
+---
+layout: post
+title:  "The exponential mechanism"
+date:   2024-07-30
+needsmath: true
+---
+
+The [exponential mechanism](https://en.wikipedia.org/wiki/Exponential_mechanism), introduced by
+[McSherry & Talwar in 2007](http://kunaltalwar.org/papers/expmech.pdf), is an algorithm to do
+differentially private selection.
+
+The setting is the following, you have:
+- A set of outputs $h \in H$.
+- A score function $s(D, h)$ which returns a score for each output, evaluated over the input dataset.
+
+We require that the _sensitivity_ of the score function is bounded by $\Delta$. That is, for all neighboring
+datasets $D$ and $D'$:
+
+$$
+\sup_{h \in H} |s(D, h) - s(D', h)| \le \Delta
+$$
+
+The exponential mechanism selects output $h$ on dataset $D$ with probability[^1]:
+
+$$
+Pr[A(D) = h] = \frac{exp\left(\frac{\epsilon s(D, h)}{2 \Delta}\right)}
+    {\sum_{h' \in H} exp\left(\frac{\epsilon s(D, h')}{2 \Delta}\right)}
+$$
+
+
+<a id="thm1" href="#thm1">Theorem 1</a>: The exponential mechanism is $\epsilon$-differentially private.
+
+To prove this, we'll begin with a helpful inequality:
+
+$$
+\begin{align*}
+exp\left(\frac{\epsilon s(D', h)}{2 \Delta}\right) &\le exp\left(\frac{\epsilon (s(D, h) + \Delta)}{2 \Delta}\right)\\
+&= exp\left(\frac{\epsilon s(D, h) + \epsilon \Delta)}{2 \Delta}\right)\\
+&= exp\left(\frac{\epsilon}{2}\right) exp\left(\frac{\epsilon\ s(D, h)}{2 \Delta}\right)
+\end{align*}
+$$
+
+With that, we can show:
+
+$$
+\begin{align*}
+\frac{Pr[A(D) = h]}{Pr[A(D') = h]} &= 
+    \frac
+    {\frac{exp(\epsilon s(D, h) / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}}
+    {\frac{exp(\epsilon s(D', h) / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}}\\\\
+&= \frac{exp(\epsilon s(D, h) / (2 \Delta))}{exp(\epsilon s(D', h) / (2 \Delta))}
+    \frac{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&= exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&\le exp\left(\frac{\epsilon}{2}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}
+    && \text{ by $\Delta$ sensitivity }\\\\
+&\le exp\left(\frac{\epsilon}{2}\right) exp\left(\frac{\epsilon}{2}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))} && \text{ by the above inequality}\\\\
+&= exp(\epsilon)
+\end{align*}
+$$
+
+## Special cases
+
+Note that we "spend" some extra $\epsilon$ budget privitizing the normalizing factor. This is not always necessary.
+
+#### Dataset-independent normalizing factor
+
+If $\forall D: \sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta)) = C$ where $C$ is a constant,
+then we can sidestep the second inequality in the above proof, as the normalizing constant across $D$ and $D'$ is equal. In this case the exponential mechanism defined above satisfies $\epsilon/2$-DP.
+
+An example here is the $k$-subset mechanism of [Wang et al. 2016](https://arxiv.org/pdf/1607.08025) (section 3.1). There the
+output domain is all possible $k$-length subsets of items, and the score subtracts utility for every item that is not the item of interest.
+
+We will outline a few more cases below when we look at [instantiating familiar mechanisms with the exponential mechanism](#instantiating-familiar-mechanisms).
+
+#### Monotonic score function
+
+A score function $s$ is monotonic, if, for every dataset $X$, output $h$, and neighboring dataset $X' = X \cup \\{x\\}$ which adds a data point to $X$:
+
+$$
+s(X, h) \le s(X', h)
+$$
+
+<a id="cor1" href="#cor1">Corollary 1</a>: If the score function $s$ is monotonic, the exponential mechanism is $\epsilon/2$ differentially private.
+
+The key proof idea is simple: we pay an extra $\epsilon/2$ privacy in the normal proof of the exponential mechanism
+due to the possibility that the score function could change in opposite directions when moving to a neighboring database.
+If this is not the case, then we can eliminate one of the two inequalities used in the proof.
+
+Case 1: $D = D' \cup \\{x\\\}$, so $s(D', h) \le s(D, h)$
+
+$$
+\begin{align*}
+&= exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&\le exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&= exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)\\\\
+&\le exp(\epsilon / 2)
+\end{align*}
+$$
+
+Case 2: $D' = D \cup \\{x\\\}$, so $s(D, h) \le s(D', h)$.
+
+$$
+\begin{align*}
+&exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D', h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&\le exp(\epsilon / 2) exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)
+    \frac{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}{\sum_{h' \in H} exp(\epsilon s(D, h') / (2 \Delta))}\\\\
+&= exp(\epsilon / 2) exp\left(\frac{\epsilon (s(D, h) - s(D', h))}{2 \Delta}\right)\\\\
+&\le exp(\epsilon / 2)
+\end{align*}
+$$
+
+[Private voting](#private-choose-one-voting) is an example where the exponential mechanism's score function is monotonic.
+
+## Interesting examples
+
+#### Private choose-one voting
+
+Your school is voting for the "teacher of the year" award and takes a survey of students.
+Each of the $N$ students selects one of $k$ teachers, and the teacher with the most votes wins.
+
+We can implement this privately with the exponential mechanism:
+
+- The domain of outputs $H$ is the set of teachers
+- $s(D, h)$ simply counts the votes for the teacher $h \in H$ under the database $D$
+- The sensitivity $\Delta$ of $s$ is 1.
+
+Note that in the add-remove adjacency model, $s$ here is monotonic since adding a student
+only increases the score for one of the teachers.
+
+#### Numeric output with bounded domain
+
+For numeric data we typically use additive noise mechanisms (e.g. Laplace) which requires an unbounded output domain.
+We can simply (though not necessarily optimally) analyze these mechanisms on a
+bounded domain with the exponential mechanism.
+
+As an example, we can look at the $d$-dimensional discrete Laplace mechanism on a bounded domain,
+where the input to the mechanism is some aggregation function $f(D) \in \mathbb{Z}^d$.
+
+- The domain of outputs $H \subset \mathbb{Z}^d$.
+- $s(D, h) = -\lVert f(D) - h \rVert_1$
+- $\Delta$ is the $\ell_1$ sensitivity of $f$.
+
+$$
+\begin{align*}
+Pr[A(D) = h] &\propto exp\left(\frac{\epsilon s(D, h)}{2 \Delta}\right)\\
+&= exp\left(-\frac{\epsilon\lVert f(D) - h \rVert_1}{2 \Delta}\right)\\
+&= exp\left(-\frac{\epsilon \sum_{i=1}^d | f(D)_i - h_i |}{2 \Delta}\right)\\
+&= \prod_{i=1}^d exp\left(-\frac{\epsilon | f(D)_i - h_i |}{2 \Delta}\right)\\
+\end{align*}
+$$
+
+Ignoring the normalizing factor, and substituting $2 \Delta$ for $\Delta$, this is equivalent to
+the discrete Laplace pmf. We can sample from the bounded discrete Laplace via techniques like rejection sampling
+from the standard discrete Laplace mechanism without explicitly computing the normalizing factor.
+
+While this technique is simple, it is often overly conservative and the factor of $2\Delta$ can often be improved.
+See e.g. [Holohan et al. 2018](https://arxiv.org/abs/1808.10410) Figure 1. This gap may be closable by bounding the difference
+between normalizing factors.
+
+## Instantiating familiar mechanisms
+
+The exponential mechanism is so general, we can describe familari (pure) differentially private
+mechanisms with it. Let's do a couple.
+
+- **k-ary randomized response**. Here the input $D$ is one of the outputs, and 
+
+    $$s(D, h) =
+    \begin{cases}
+    1 & \text{ if } D = h,\\
+    0 & \text{ otherwise}\\
+    \end{cases}
+    $$
+
+    It is clear that the normalizing factor is input-independent. After removing the factor of 2, the exponential mechanism
+is identical to k-ary randomized response.
+
+- **(Discrete) Laplace mechanism**. This is outlined above, but the discrete and continuous laplace mechanisms can be
+    modeled as instances of the exponential mechanism with $s(D, h) = -\lVert f(D) - h\rVert_1$, and where the domain is
+    either $\mathbb{Z}^d$ or $\mathbb{R}^d$. The normalizing factor here is input-independent too.
+
+- **RAPPOR**. This one is a little trickier. For a domain of size $d$ RAPPOR has output space $H = \\{0, 1\\}^d$ i.e. all
+    $d$-length bit strings. $s(D, h) = -\sum_i \|D_i - h_i\|$ i.e. the score counts the number of matching bits.
+    The normalizing factor again is input-independent, and the sensitivity $\Delta = 2$, because a neighboring dataset under
+    RAPPOR sets a new bit _and_ unsets a bit. Therefore outputs from the exponential mechanism are distributed according to:
+
+    $$
+    \begin{align*}
+    Pr[A(D) = h] &= \frac{exp(\epsilon\ s(D, h) / 2)}{\sum_{h'} exp(\epsilon\ s(D, h') / 2)}\\\\
+    &= \frac{exp(\epsilon\ s(D, h) / 2)}{\sum_{k=0}^d {d\choose k} exp(\epsilon\ i / 2)} & \text{ where $k$ is the number of matching bits}\\\\
+    &= \frac{exp(\epsilon\ s(D, h) / 2)}{(exp(\epsilon / 2) + 1)^d}\\\\
+    &= \prod_{k=0}^d \frac{exp(\epsilon\ [D_k = h_k] / 2)}{(exp(\epsilon / 2) + 1)}\\\\
+    &= \prod_{k=0}^d \begin{cases}
+        \frac{1}{e^{\epsilon / 2} + 1} & \text{ if $D_k \neq h_k$ }\\
+        1 - \frac{1}{e^{\epsilon / 2} + 1} & \text{ if $D_k = h_k$ }\\
+        \end{cases}
+    \end{align*}
+    $$
+
+    Each term in the product precisely corresponds to the probability a bit is flipped in RAPPOR of $\frac{1}{e^{\epsilon/2} + 1}$.
+
+A key theme in these "standard" mechanisms is that their normalizing factors are dataset-independent, which indicates the
+mechanisms do not utilize the full expressive power of the exponential mechanism.
+
+## Universality
+
+In fact, the exponential mechanism captures _all_ $\epsilon$-DP mechanisms in that they can all be described in its framework.
+This fact is claimed in the original paper from McSherry & Talwar without proof. We'll prove it here just for fun, even though the its a bit silly and tautalogical.
+
+<a id="thm2" href="#thm2">Theorem 2</a>: Any $\epsilon$-DP mechanism $A$ can be described as an instance
+of the exponential mechanism with a tuple $(s, H)$.
+
+**Proof**: We'll just handle the discrete case, but the continuous case should follow the same way.
+
+
+Let $A'$ be the exponential mechanism described by $(s, H)$, where
+- $s(D, h) = \log{Pr[A(D) = h]}$
+- $H = image(A)$
+
+First, we will compute $\Delta$.
+
+$$
+\begin{align*}
+\Delta &= \sup_{h, dist(D, D') \le 1} |s(D, h) - s(D', h)|\\
+&= \sup_{h, dist(D, D') \le 1} \left| log{\frac{Pr[A(D) = h]}{Pr[A(D') = h]}}\right|\\
+&\le \epsilon & \text{ by $\epsilon$ differential privacy}
+\end{align*}
+$$
+
+Therefore:
+
+$$
+\begin{align*}
+Pr[A'(D) = h] = &\frac{exp(\epsilon\ s(D, h) / \Delta)}{\sum_{h'} exp(\epsilon\ s(D, h) / \Delta)}\\\\
+& = \frac{exp(\log{Pr[A(D) = h]})}{\sum_{h'} exp(\log{Pr[A(D) = h']})}\\\\
+&= Pr[A(D) = h]
+\end{align*}
+$$
+
+Where we omit the factor of 2 in the denominator because the normalizing factor is dataset independent, as it just sums
+all entries in a PMF.
+
+
+## Computational (in)feasiblility
+
+In general, sampling from the exponential mechanism may not be computationally feasible. This is because the
+domain of outputs is often exponential and requires exponential time to naively evaluate the score function per element.
+This can lead to mechanisms which "exist" but cannot be used in practice.
+
+One example is private deep learning. Imagine the following setup:
+
+- Let the database $D = \\{x, y\\}^n$ be a set of labeled examples of size $n$.
+- The set of outputs $H$ is the set of _all possible models_ with some fixed architecture. E.g. an architecture with $p$ different
+    $b$-bit parameters has $2^{b p}$ possible models. Let $f(h, x)$ be the prediction of model $h$ on example $x$.
+- Let the score function $s(D, h)$ be some loss function (negated) with bounded sensitivity,
+    e.g. MSE: $s(D, h) = -\frac{1}{n} \sum_{i=1}^n \left(y_i - f(h, x_i)\right)^2$.
+    Assuming $f(h, x)$ is bounded in $[0, 1]$ (e.g. for binary prediction task), $\Delta = 1$ in this case.
+
+Now naively executing the exponential mechanism is as "simple" as:
+1. Enumerating all possible models, and evaluating every datapoint through every model to assign a score to it
+1. Making the weighted random model selection based on the scores in (1).
+
+However, it is truly one of the least efficient algorithms you could come up with!
+
+While in general it is difficult
+to sample from the exponential mechanism, various restrictions on
+the loss function allow more efficient sampling. There is a rich literature here, e.g.
+    [Bassily et al. 2014](https://arxiv.org/abs/1405.7085),
+    [Amin et al. 2019](https://travisbarrydick.github.io/docs/PrivateCovariance_NeurIPS2019.pdf),
+    [Ganesh & Talwar, 2020](https://arxiv.org/pdf/2010.14658,)
+    [Gopi et al. 2022](https://arxiv.org/pdf/2203.00263),
+    [Hopkins et al. 2022](https://arxiv.org/abs/2111.12981), and
+    [Ganesh et al. 2023](https://arxiv.org/abs/2204.01585)
+
+I may outline some methods in more detail in a future post, though they can get pretty technical.
+
+[^1]: Note the exponential mechanism can work on non-discrete domains as well, but for simplicity we only discuss discrete domains in this post.
+    For the most part, you can just swap summation with integration over the domain, as long as the domain satisfies some natural
+    properties that permit the integration being well-defined.
