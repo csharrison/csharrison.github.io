@@ -8,9 +8,8 @@
   {%- seo -%}
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
   {%- feed_meta -%}
-  {%- if jekyll.environment == 'production' and site.google_analytics -%}
-    {%- include google-analytics.html -%}
-  {%- endif -%}
+
+  <script data-goatcounter="https://csharrison.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
   <!-- For math support. Only include this snippet conditionally since it could incur extra network requests.
        TODO: for browsers that support MathML natively, we can probably speed up page loads by converting the
