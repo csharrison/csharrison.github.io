@@ -284,7 +284,7 @@ $$
 \end{align*}
 $$
 
-The log ratio of the infinite sums will interpolate between these two extreme points.
+The log ratio of the infinite sums will interpolate between these two extreme points[^int].
 So the privacy loss is maximized at $k=\Delta$. 
 
 Note: This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
@@ -371,3 +371,5 @@ There are a few things we did not explore:
 [^sense]: I believe the statement is true for non-integer $\Delta > 0$, but I don't quite have a proof yet.
 
 [^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
+
+[^int]: TODO: show formally :)
