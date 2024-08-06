@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Infinite divisibility and distributed noise addition"
-date:   2024-07-30
+title:  "Distributed noise addition and infinite divisibility"
+date:   2024-08-05
 needsmath: true
 ---
 
@@ -9,7 +9,7 @@ Differentially private mechanisms often require their implementions to be _distr
 parties. One common case is when multiple parties only add a _portion_ of the noise, such that the total
 noise in the final output is achieved by summing up the noise across multiple parties
 
-This kind of distributed noise addition is used in federated learning protocols like Secure Aggregation (see e.g. this [blog post](https://research.google/blog/distributed-differential-privacy-for-federated-learning/)),
+This kind of distributed noise addition is used in federated learning protocols like [Secure Aggregation](://research.google/blog/distributed-differential-privacy-for-federated-learning),
 or in contexts like multi-message shuffle protocols (e.g. [Balle et al. 2020](https://arxiv.org/pdf/2002.00817), [Ghazi et al. 2021](https://proceedings.mlr.press/v139/ghazi21a/ghazi21a.pdf)).
 
 A simplified setting we'll study in this post is the following:
@@ -50,7 +50,7 @@ gaussian noise satisfies $\frac{\Delta_2^2}{2 \sigma^2}$-zCDP. Therefore:
 - If only $\beta$ fraction of parties can be guaranteed to add noise, we should satisfy $\frac{\Delta_2^2}{2 \beta \sigma^2}$-zCDP.
 
 One challenge with using continuous distributions here is that practical mechanisms are implemented on
-finite computers. This poses challenges (e.g. the classic [Mironov (2012)](https://www.microsoft.com/en-us/research/wp-content/uploads/2012/10/lsbs.pdf)[^1])
+finite computers. This poses challenges (e.g. the classic [Mironov (2012)](https://www.microsoft.com/en-us/research/wp-content/uploads/2012/10/lsbs.pdf)[^mironov])
 even if a single party is adding noise. Multiple parties only amplifies the challenges here, as approximations
 or errors in each $X_i$ will accumulate in the final sum.
 
@@ -128,7 +128,7 @@ $$
 This exactly matches the discrete laplace's characteristic function (which is equal to its MGF) see e.g. the [scipy docs](https://docs.scipy.org/doc/scipy/tutorial/stats/discrete_dlaplace.html).
 
 How does this help us? Well, it turns out that the geometric distribution
-(as a limiting case of the negative binomial / Polya distribution) is infinitely divisible!
+(as a limiting case of the negative binomial[^polya] distribution) is infinitely divisible!
 
 $$
 Geo(p) = NBinom(1, p) = \sum_{i=1}^n NBinom(1/n, p)
@@ -188,21 +188,24 @@ Let's see what this bad boy looks like numerically via convolving two negative b
 
 Surprisingly, it seems like (from staring at the plots) that 
 if only $\beta$ fraction of parties add noise, we see higher variance (with similar tail behavior)
-vs scaling $\epsilon' = \frac{n}{m} \epsilon$ under the discrete laplace.
-This suggests that _possibly_ this mechanism satisfies pure DP
+vs scaling $\epsilon' = \epsilon/\beta$ under the discrete laplace. Maybe that means it has
+better privacy, formally?
 
 Let's try to prove something about the privacy loss under this mechanism.
 
-<a id="thm1" href="#thm1">Theorem 1</a>: The univariate GDL with $a = \frac{\epsilon_0}{\Delta}$ mechanism with $\Delta \in \mathbb{N}$ sensitivity satisfies differential privacy with 
+<a id="thm1" href="#thm1">Theorem 1</a>: The univariate GDL with $a = \frac{\epsilon_0}{\Delta}$ mechanism with $\Delta \in \mathbb{N}$ sensitivity[^sense] satisfies differential privacy with  
 
 $$
 \epsilon \le \begin{cases}
-\epsilon_0 + \log \left(\frac{\Gamma(\beta)\ \Gamma(1 + \Delta)}{\Gamma(\beta + \Delta)}\right) & \text { if $0 \lt \beta \le 1$}\\
+\epsilon_0 + \log \frac {\sideset{_2}{_1}F[\beta; \beta; 1; e^{-2a}]}
+    {\sideset{_2}{_1}F[\beta; \beta + \Delta; 1 +\Delta ; e^{-2a}]}
+    \frac{\Gamma(\Delta+1)\Gamma(\beta)}{\Gamma(\beta + \Delta)}
+    &\text{ if 0 < $\beta \le 1$}\\
 \epsilon_0 & \text{ if $\beta > 1$}
 \end{cases}
 $$
 
-The $\beta > 1$ case is trivial[^2], since we know that $\beta = 1$ recovers the discrete laplace
+The $\beta > 1$ case is trivial[^largebeta], since we know that $\beta = 1$ recovers the discrete laplace
 exactly. For the $0 \lt \beta \le 1$ we'll start off with the PMF of the GDL in terms of
 [hypergeometric functions](https://en.wikipedia.org/wiki/Hypergeometric_function) (Lekshmi & Sebastian eq 2.5):
 
@@ -224,54 +227,66 @@ Without loss of generality, consider the neighboring datasets at distance $\Delt
 $$
 \begin{align*}
 \log{\frac{p_{GDL(\beta, a)}(k-\Delta)}{p_{GDL(\beta, a)}(k)}} &=
-= \log \frac {e^{-a|k - \Delta|} \sideset{_2}{_1}F[\beta; \beta + |k - \Delta|; |k - \Delta| + 1; e^{-2a}]}
+\log \frac {e^{-a|k - \Delta|} \sideset{_2}{_1}F[\beta; \beta + |k - \Delta|; |k - \Delta| + 1; e^{-2a}]}
     {e^{-a|k|} \sideset{_2}{_1}F[\beta; \beta + |k|; |k| + 1; e^{-2a}]}
 \frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}{\Gamma(|k-\Delta| + 1)\Gamma(\beta + |k|)}
 \\\\
 &= a(|k|-|k-\Delta|) +
-    \log \frac
-    {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k - \Delta| +s)}{\Gamma(|k-\Delta| + 1 + s)s!}e^{-2 a s}}
-    {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(|k| + 1 + s)s!}e^{-2 a s}}
+\log \left(\frac{\sideset{_2}{_1}F[\beta; \beta + |k - \Delta|; |k - \Delta| + 1; e^{-2a}]}
+          {\sideset{_2}{_1}F[\beta; \beta + |k|; |k| + 1; e^{-2a}]}\right) +
+\log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}
+          {\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)\\\\
+&= A + B + C
 \end{align*}
 $$
 
-It is clear that the first term is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$. 
-Let $t(a, \beta, k, s)$ denote the $s$th term in each sum of the second term.
+We will proceed by showing that $k = \Delta$ maximizes this quantity.
+Clearly, $A$ is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$, so it suffices to show $B + C$
+is maximized at $k = \Delta$. Our approach will be to:
 
-$$
-t(a, \beta, k, s) = \frac{\Gamma(\beta+s)}{\Gamma(1+s)}\frac{\Gamma(\beta + |k| +s)}{\Gamma(1 +|k|+ s)}e^{-2 a s}
-$$
+1. Show that $C$ is maximized at $k=\Delta$
+1. Show that $B$ smoothly interpolates between 0 and $-C$ as a function of $a$
 
-Rewriting the quantity inside the $\log$, it becomes:
+The result follows from (1) and (2).
+This [stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)
+outlines the argument why $k=\Delta$ maximizes $C$. To show $B$ smoothly interpolates between
+$0$ and $-C$, note that:
 
 $$
 \begin{align*}
-&\frac{\sum_{i=0}^\infty t(a, \beta, k-\Delta, s)}{\sum_{i=0}^\infty t(a, \beta, k, s)}\\\\
-&\le \frac{t(a, \beta, k-\Delta, 0)}{t(a, \beta, k, 0)} \\\\
-&= \frac{\Gamma(\beta + |k-\Delta|)}{\Gamma(1 + |k-\Delta|)} \frac{\Gamma(1 + |k|)}{\Gamma(\beta + |k|)}\\\\
-&\le \frac{\Gamma(\beta)\Gamma(1 + \Delta)}{\Gamma(\beta + \Delta)} &\text{with equality at $k=\Delta$}\\
+\lim_{a \to \infty} C &= \log \frac{1}{1} = 0 & \text { since } \sideset{_2}{_1}F[a;b;c;0] = 1\\
+\lim_{a \to 0} C &= 
+    \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
+         {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
+    \lim_{a \to 0} 
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\\\
+&=  \log \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
+              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}\\\\
+&= -C
 \end{align*}
 $$
 
-The first inequality is due to the generalized [mediant inequality](https://en.wikipedia.org/wiki/Mediant_(mathematics)),
-where $s=0$ is the maximal term
-in either sum. The second inequality is explored in [this math.stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g).
-The theorem follows directly from this bound.
+All other values of $a$ yield $B$ between $0$ and $-C$, as the ratio of infinite sums will fall between 0 and 1. The theorem follows from plugging in $k = \Delta$.
+This bound is tight, and it matches numerical bounds exactly.
 
-Let's double check our work with Google's DP accounting library (setting $\epsilon_0 = \log 3$).
 ![Figure 2](/images/gdl-eps.svg)
 
-From the numeric accounting, it appears our bound is essentially tight as $\beta$ approaches 0 or 1[^3],
-but is not tight in the middle region. Maybe we can improve it (and prove the $\Delta \in \mathbb{R}^+$ case) in a future post[^4]. The only non-tight inequality we used was the mediant inequality, so that's the step
-we'd need to improve.
+These plots align with the PMF plots above in that we _do_ see improved privacy over the baseline
+$\epsilon_0/\beta$ in the $\Delta=1$ regime. Interestingly, this is not universal across all $\Delta$ regimes.
 
-Fun facts on the GDL distribution:
+
+**Fun facts on the GDL distribution**:
 - As $\beta \gg 1$, the GDL distribution will approach the gaussian via the central limit theorem. As such, the GDL may be parameterized to enjoy gaussian-like approximate DP guarantees while simultaneously
 satisfying pure DP. 
 - As $a \to \infty$ (and therefore $p \to 1$), the negative binomial approaches the poisson distribution.
     This means that the GDL actually approaches the skellam distribution for large values of $a$! 
-    To make this parameterization actually private requires $beta \gg 1$. Quantifying this convergence
+    To make this parameterization private requires $beta \gg 1$. Quantifying this convergence
     would be an interesting follow-up question.
+- For small values of $\Delta$, the hypergeometric term in the theorem statement is very small. The bound
+    can be simplified by taking a looser upper bound without its small (negative) contribution.
+- It should be relatively straightforward to translate univariate bounds to multivariate bounds similar to
+    the laplace mechanism.
 
 ## Positive-only noise addition: negative binomial mechanism
 
@@ -316,23 +331,23 @@ There are a few things we did not explore:
     In the limiting case where the Gamma RVs are exponential, this yields the continous laplace
     distribution. Does the so-called Generalized Continous Laplace (GCL?) satisfy Pure DP?
 - There are a number of continous infinitely divisible distributions like like the Cauchy (see [Nissim et al. 2007](https://cs-people.bu.edu/ads22/pubs/NRS07/NRS07-full-draft-v1.pdf))
-    or Student's T distribution (see [Bun & Steinke 2019](https://proceedings.neurips.cc/paper_files/paper/2019/file/3ef815416f775098fe977004015c6193-Paper.pdf)) are used when scaling noise by _smooth sensitivity_ of the measurement rather than the global sensitivity[^5]. For an overview of this approach, see section 3.1 of [The Complexity of Differential Privacy](https://privacytools.seas.harvard.edu/files/complexityprivacy_1.pdf) by Vadhan. Given that smooth sensitivity is computed per _dataset_, it seems especially challenging to use in the distributed setting e.g. if no party can see the whole dataset!
+    or Student's T distribution (see [Bun & Steinke 2019](https://proceedings.neurips.cc/paper_files/paper/2019/file/3ef815416f775098fe977004015c6193-Paper.pdf)) are used when scaling noise by _smooth sensitivity_ of the measurement rather than the global sensitivity[^local]. For an overview of this approach, see section 3.1 of [The Complexity of Differential Privacy](https://privacytools.seas.harvard.edu/files/complexityprivacy_1.pdf) by Vadhan. Given that smooth sensitivity is computed per _dataset_, it seems especially challenging to use in the distributed setting e.g. if no party can see the whole dataset!
 - Under cryptographic multi-party computation (MPC) protocols, it is possible for parties to jointly
-    sample noise distributed according to a great many distributions, not necessarily only infinitely
+    sample noise distributed according to more distributions than just infinitely
     divisible ones. The main tool this setting typically leverages is _interaction_ between the parties.
     For the approaches outlined in this post, the parties can sample noise independently without
-    any interaction (which is also possible in MPC protocols, to be clear).
+    any interaction (which can also be a component MPC protocols, to be clear).
     See e.g. [Keller et al 2023](https://eprint.iacr.org/2023/1594.pdf) for an example,
-    which outlines MPC protocols for many of the distributions we explored here.
+    which outlines protocols for many of the distributions we explored here.
 
+[^polya]: Note that the generalized negative binomial whose stopping time parameter is a real number
+    is often refered to as the Polya distribution, but in this post we just match what scipy does 😂.
 
-[^1]: I feel like I cite this paper every other post :D
+[^mironov]: I feel like I cite this paper every other post :D
 
-[^2]: I believe this is tight under pure DP, but it should be possible to show approximate / Renyi DP
+[^largebeta]: I believe this is tight under pure DP, but it should be possible to show approximate / Renyi DP
     since the distribution will approach the gaussian as $\beta \gg 1$.
 
-[^3]: Note that for $\beta = 1$ the bound we computed is exactly the same as the discrete laplace. That's a relief!
+[^sense]: I believe the statement is true for non-integer $\Delta > 0$, but I don't quite have a proof yet.
 
-[^4]: I thought those difference plots looked suspiciously close to the [binary entropy function](https://en.wikipedia.org/wiki/Binary_entropy_function), but they don't exactly line up and I couldn't find a plausible connection.
-
-[^5]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
+[^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
