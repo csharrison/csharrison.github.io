@@ -270,7 +270,7 @@ $$
 $$
 
 All other values of $a$ yield $B$ between $0$ and $-C$, as the ratio of infinite sums will fall between 0 and 1. The theorem follows from plugging in $k = \Delta$.
-This bound is tight, and it matches numerical bounds exactly.
+This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
 
 ![Figure 2](/images/gdl-eps.svg)
 
