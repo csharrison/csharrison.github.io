@@ -216,14 +216,6 @@ Pr[GDL(\beta, a) = x] = e^{-a|x|}(1-e^{-a})^{2\beta}\ \sideset{_2}{_1}F[\beta; \
 \frac{\Gamma(\beta + |x|)}{\Gamma(|x| + 1)\Gamma(\beta)}
 $$
 
-Additionally, we will make use of the following hypergeometric identity (see [eq 15.2.2 from DLMF](https://dlmf.nist.gov/15.2)):
-
-$$
-\begin{align*}
-\sideset{_2}{_1}F[a; b; c; z] &= \frac{\Gamma(c)}{\Gamma(a)\Gamma(b)} \sum_{s=0}^\infty \frac{\Gamma(a+s)\Gamma(b+s)}{\Gamma(c+s)s!}z^s
-\end{align*}
-$$
-
 Without loss of generality, consider the neighboring datasets at points $\mu_D=\Delta$ and $\mu_{D'} = 0$:
 
 $$
@@ -252,12 +244,21 @@ is maximized at $k = \Delta$. Our approach will be to:
 The result follows from (1) and (2).
 This [stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)
 outlines the argument why $k=\Delta$ maximizes $C$. To show $B$ smoothly interpolates between
-$0$ and $-C$, note that:
+$0$ and $-C$, we'll use the following hypergeometric identity (see [eq 15.2.2 from DLMF](https://dlmf.nist.gov/15.2)):
 
 $$
 \begin{align*}
-\lim_{a \to \infty} C &= \log \frac{1}{1} = 0 & \text { since } \sideset{_2}{_1}F[a;b;c;0] = 1\\
-\lim_{a \to 0} C &= 
+\sideset{_2}{_1}F[a; b; c; z] &= \frac{\Gamma(c)}{\Gamma(a)\Gamma(b)} \sum_{s=0}^\infty \frac{\Gamma(a+s)\Gamma(b+s)}{\Gamma(c+s)s!}z^s
+\end{align*}
+$$
+
+Additionally, $\sideset{_2}{_1}F[a; b; c; 0] = 1$ for all values $a, b, c$.
+With those identities in hand, we can show:
+
+$$
+\begin{align*}
+\lim_{a \to \infty} B &= \log \frac{1}{1} = 0\\
+\lim_{a \to 0} B &=
     \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
          {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
     \lim_{a \to 0} 
