@@ -262,7 +262,6 @@ $$
 B &=
     \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
          {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
-    \lim_{a \to 0} 
     \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
          {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\\\
 &= \log \left( \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
