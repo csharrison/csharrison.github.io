@@ -286,7 +286,7 @@ $$
 \end{align*}
 $$
 
-The log ratio of the infinite sums will interpolate between these two extreme points[^int],
+$B$ will interpolate between these two extreme points for all values of $k$[^int],
 so the privacy loss is maximized at $k=\Delta$.
 
 Note: This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
