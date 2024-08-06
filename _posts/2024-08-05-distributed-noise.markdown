@@ -191,7 +191,7 @@ if only $\beta$ fraction of parties add noise, we see higher variance (with simi
 vs scaling $\epsilon' = \epsilon/\beta$ under the discrete laplace. Maybe that means it has
 better privacy, formally?
 
-Let's try to prove something about the privacy loss under this mechanism.
+Let's try to show something about the privacy loss under this mechanism.
 
 <a id="thm1" href="#thm1">Theorem 1</a>: The univariate GDL with $a = \frac{\epsilon_0}{\Delta}$ mechanism with $\Delta \in \mathbb{N}$ sensitivity[^sense] satisfies differential privacy with  
 
@@ -205,7 +205,7 @@ $$
 \end{cases}
 $$
 
-Where $\sideset{_2}{_1}F$ is the [hypergeometric functions](https://en.wikipedia.org/wiki/Hypergeometric_function) and $\Gamma$ is the [gamma function](https://en.wikipedia.org/wiki/Gamma_function).
+Where $\sideset{_2}{_1}F$ is the [hypergeometric function](https://en.wikipedia.org/wiki/Hypergeometric_function) and $\Gamma$ is the [gamma function](https://en.wikipedia.org/wiki/Gamma_function).
 
 The $\beta > 1$ case is trivial[^largebeta], since we know that $\beta = 1$ recovers the discrete laplace
 exactly. For the $0 \lt \beta \le 1$ we'll start off with the PMF of the GDL in terms of
@@ -234,7 +234,9 @@ $$
 \end{align*}
 $$
 
-We will proceed by showing that $k = \Delta$ maximizes this quantity.
+We will proceed by showing that $k = \Delta$ maximizes this quantity, and the theorem statement
+follows directly from plugging in $\Delta$ for $k$ above.
+
 Clearly, $A$ is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$, so it suffices to show $B + C$
 is maximized at $k = \Delta$. Our approach will be to:
 
@@ -257,21 +259,36 @@ With those identities in hand, we can show:
 
 $$
 \begin{align*}
-\lim_{a \to \infty} B &= \log \frac{1}{1} = 0\\
-\lim_{a \to 0} B &=
+B &=
     \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
          {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
     \lim_{a \to 0} 
     \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
          {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\\\
-&=  \log \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
-              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}\\\\
-&= -C
+&= \log \left( \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
+              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
+         \right)\\\\
+&= -C + \log 
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
 \end{align*}
 $$
 
-All other values of $a$ yield $B$ between $0$ and $-C$, as the ratio of infinite sums will fall between 0 and 1. The theorem follows from plugging in $k = \Delta$.
-This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
+The endpoints are:
+
+$$
+\begin{align*}
+\lim_{a \to \infty} B &= \log \frac{1}{1} = 0\\
+\lim_{a \to 0} B &= -C
+\end{align*}
+$$
+
+The log ratio of the infinite sums will interpolate between these two extreme points.
+So the privacy loss is maximized at $k=\Delta$. 
+
+Note: This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
 
 ![Figure 2](/images/gdl-eps.svg)
 
