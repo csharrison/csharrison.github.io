@@ -279,13 +279,15 @@ The endpoints are:
 
 $$
 \begin{align*}
-\lim_{a \to \infty} B &= \log \frac{1}{1} = 0\\
+\lim_{a \to \infty} B &= \log \frac{\sideset{_2}{_1}F[\beta; \beta + |k-\Delta|; 1 + |k-\Delta|; 0]}
+                                   {\sideset{_2}{_1}F[\beta; \beta + |k|; 1 + |k|; 0]}\\
+&= \log 1 = 0\\
 \lim_{a \to 0} B &= -C
 \end{align*}
 $$
 
-The log ratio of the infinite sums will interpolate between these two extreme points[^int].
-So the privacy loss is maximized at $k=\Delta$. 
+The log ratio of the infinite sums will interpolate between these two extreme points[^int],
+so the privacy loss is maximized at $k=\Delta$.
 
 Note: This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
 
