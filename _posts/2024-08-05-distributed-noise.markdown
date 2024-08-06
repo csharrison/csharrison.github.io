@@ -205,16 +205,18 @@ $$
 \end{cases}
 $$
 
+Where $\sideset{_2}{_1}F$ is the [hypergeometric functions](https://en.wikipedia.org/wiki/Hypergeometric_function) and $\Gamma$ is the [gamma function](https://en.wikipedia.org/wiki/Gamma_function).
+
 The $\beta > 1$ case is trivial[^largebeta], since we know that $\beta = 1$ recovers the discrete laplace
 exactly. For the $0 \lt \beta \le 1$ we'll start off with the PMF of the GDL in terms of
-[hypergeometric functions](https://en.wikipedia.org/wiki/Hypergeometric_function) (Lekshmi & Sebastian eq 2.5):
+hypergeometric functions (Lekshmi & Sebastian eq 2.5):
 
 $$
 Pr[GDL(\beta, a) = x] = e^{-a|x|}(1-e^{-a})^{2\beta}\ \sideset{_2}{_1}F[\beta; \beta + |x|; |x| + 1; e^{-2a}]\
 \frac{\Gamma(\beta + |x|)}{\Gamma(|x| + 1)\Gamma(\beta)}
 $$
 
-We will attempt to simplify this with the following hypergeometric identity (e.g. from [eq 15.2.2 from DLMF](https://dlmf.nist.gov/15.2)):
+Additionally, we will make use of the following hypergeometric identity (see [eq 15.2.2 from DLMF](https://dlmf.nist.gov/15.2)):
 
 $$
 \begin{align*}
@@ -222,12 +224,12 @@ $$
 \end{align*}
 $$
 
-Without loss of generality, consider the neighboring datasets at distance $\Delta$ from each other:
+Without loss of generality, consider the neighboring datasets at points $\mu_D=\Delta$ and $\mu_{D'} = 0$:
 
 $$
 \begin{align*}
-\log{\frac{p_{GDL(\beta, a)}(k-\Delta)}{p_{GDL(\beta, a)}(k)}} &=
-\log \frac {e^{-a|k - \Delta|} \sideset{_2}{_1}F[\beta; \beta + |k - \Delta|; |k - \Delta| + 1; e^{-2a}]}
+\log \frac{Pr[\Delta + GDL_{\beta, a} = k]}{Pr[0 + GDL_{\beta, a} = k]} &= \log \frac{Pr[GDL_{\beta, a} = k-\Delta]}{Pr[GDL_{\beta, a} = k]}\\
+&= \log \frac {e^{-a|k - \Delta|} \sideset{_2}{_1}F[\beta; \beta + |k - \Delta|; |k - \Delta| + 1; e^{-2a}]}
     {e^{-a|k|} \sideset{_2}{_1}F[\beta; \beta + |k|; |k| + 1; e^{-2a}]}
 \frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}{\Gamma(|k-\Delta| + 1)\Gamma(\beta + |k|)}
 \\\\
