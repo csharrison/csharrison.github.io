@@ -325,6 +325,7 @@ To summarize, we outlined a few techniques spanning multiple privacy
 notions (pure DP, Renyi DP, zCDP, and approximate DP) and settings (non-negative noise, discrete / continuous noise).
 In each case, we exploited infinite divisibility and self-decomposability to analyze privacy under a
 varying fraction of participating parties.
+The colab generating plots can be found [here](https://colab.research.google.com/drive/1DVjWXByS_kGmxDGjlo_nJgFPgP0F4CRE?usp=sharing).
 
 There are a few things we did not explore:
 - The continuous analog to the GDL we explored is the difference of Gamma random variables.
