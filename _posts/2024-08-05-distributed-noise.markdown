@@ -216,6 +216,14 @@ Pr[GDL(\beta, a) = x] = e^{-a|x|}(1-e^{-a})^{2\beta}\ \sideset{_2}{_1}F[\beta; \
 \frac{\Gamma(\beta + |x|)}{\Gamma(|x| + 1)\Gamma(\beta)}
 $$
 
+We also make use of the following identity the [DLMF eq 15.2.2 ](https://dlmf.nist.gov/15.2):
+
+$$
+\begin{align*}
+\sideset{_2}{_1}F[a; b; c; z] &= \frac{\Gamma(c)}{\Gamma(a)\Gamma(b)} \sum_{s=0}^\infty \frac{\Gamma(a+s)\Gamma(b+s)}{\Gamma(c+s)s!}z^s
+\end{align*}
+$$
+
 Without loss of generality, consider the neighboring datasets at points $\mu_D=\Delta$ and $\mu_{D'} = 0$:
 
 $$
@@ -230,66 +238,58 @@ $$
           {\sideset{_2}{_1}F[\beta; \beta + |k|; |k| + 1; e^{-2a}]}\right) +
 \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}
           {\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)\\\\
-&= A + B + C
+
+&= a(|k|-|k-\Delta|) + \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
+         {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
+    + \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}
+          {\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)\\\\
+&= a(|k|-|k-\Delta|) +
+    \log \left( \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
+              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
+         \right)
+    + \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}
+          {\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)\\\\
+&= a(|k|-|k-\Delta|) +\log 
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\
+&= A + B
 \end{align*}
 $$
 
 We will proceed by showing that $k = \Delta$ maximizes this quantity, and the theorem statement
 follows directly from plugging in $\Delta$ for $k$ above.
 
-Clearly, $A$ is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$, so it suffices to show $B + C$
-is maximized at $k = \Delta$. Our approach will be to:
+Clearly, $A$ is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$, so it suffices to show $B$
+is maximized at $k = \Delta$. Informally, $B$ smoothly interpolates between $0$ and $C = \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}{\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)$ as a function of $a$. 
 
-1. Show that $C$ is maximized at $k=\Delta$
-1. Show that $B$ smoothly interpolates between 0 and $-C$ as a function of $a$
-
-The result follows from (1) and (2).
-This [stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)
-outlines the argument why $k=\Delta$ maximizes $C$. To show $B$ smoothly interpolates between
-$0$ and $-C$, we'll use the following hypergeometric identity (see [eq 15.2.2 from DLMF](https://dlmf.nist.gov/15.2)):
+Here are the endpoints:
 
 $$
 \begin{align*}
-\sideset{_2}{_1}F[a; b; c; z] &= \frac{\Gamma(c)}{\Gamma(a)\Gamma(b)} \sum_{s=0}^\infty \frac{\Gamma(a+s)\Gamma(b+s)}{\Gamma(c+s)s!}z^s
+\lim_{a \to \infty} B &= 
+\log \frac{\sideset{_2}{_1}F[\beta; \beta + |k-\Delta|; 1 + |k-\Delta|; 0]}
+          {\sideset{_2}{_1}F[\beta; \beta + |k|; 1 + |k|; 0]} -
+     \log \left( \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
+              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}\right) \\
+&= \log\left(\frac{1}{1}\right) + C = C\\
+\lim_{a \to 0} B &= \lim_{a \to 0} 
+    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
+         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\
+    &= 0
 \end{align*}
 $$
 
-Additionally, $\sideset{_2}{_1}F[a; b; c; 0] = 1$ for all values $a, b, c$.
-With those identities in hand, we can show:
+We do know $C$ is maximized at $k=\Delta$ (see [this stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)). We could stop there and say
+$\epsilon \le \epsilon_0 + C$, but this would not be tight.
 
-$$
-\begin{align*}
-B &=
-    \log \frac{\frac{\Gamma(1 + |k-\Delta|)}{\Gamma(\beta)\Gamma(\beta + |k-\Delta|)}}
-         {\frac{\Gamma(1 + |k|)}{\Gamma(\beta)\Gamma(\beta + |k|)}}
-    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
-         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}\\\\
-&= \log \left( \frac{\Gamma(1 + |k- \Delta|)\Gamma(\beta + |k|)}
-              {\Gamma(1 + |k|)\Gamma(\beta + |k-\Delta|)}
-    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
-         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
-         \right)\\\\
-&= -C + \log 
-    \frac{\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k-\Delta| +s)}{\Gamma(1 + |k-\Delta|+s)s!}e^{-2 a s}}
-         {\sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |k| +s)}{\Gamma(1 + |k| +s)s!}e^{-2 a s}}
-\end{align*}
-$$
+TODO: finish proof :)
 
-The endpoints are:
-
-$$
-\begin{align*}
-\lim_{a \to \infty} B &= \log \frac{\sideset{_2}{_1}F[\beta; \beta + |k-\Delta|; 1 + |k-\Delta|; 0]}
-                                   {\sideset{_2}{_1}F[\beta; \beta + |k|; 1 + |k|; 0]}\\
-&= \log 1 = 0\\
-\lim_{a \to 0} B &= -C
-\end{align*}
-$$
-
-$B$ will interpolate between these two extreme points for all values of $k$[^int],
-so the privacy loss is maximized at $k=\Delta$.
-
-Note: This bound is tight for $\beta \le 1$, and it matches numerical bounds exactly.
+To check that the bound is tight for $\beta \le 1$, we can check it vs. numerical approaches with Google's
+DP accounting library.
 
 ![Figure 2](/images/gdl-eps.svg)
 
@@ -373,5 +373,3 @@ There are a few things we did not explore:
 [^sense]: I believe the statement is true for non-integer $\Delta > 0$, but I don't quite have a proof yet.
 
 [^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
-
-[^int]: TODO: show formally :)
