@@ -284,9 +284,11 @@ $$
 $$
 
 We do know $C$ is maximized at $k=\Delta$ (see [this stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)). We could stop there and say
-$\epsilon \le \epsilon_0 + C$, but this would not be tight.
-
-TODO: finish proof :)
+$\epsilon \le \epsilon_0 + C$, but this would not be tight. However, we can use a similar approach to show that
+the quantity $f(x) = \sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |x| +s)}{\Gamma(1 + |x| + s)s!}e^{-2 a s}$ has a single maximum when $x = 0$. Informally[^todo], the result follows from:
+- Noticing for $B = \frac{f(k-\Delta)}{f(k)}$, the numerator and denominator of are translations of each other.
+- $\frac{d^2 f}{d k}$ is negative for $k \lt 0$ and positive for $k \gt 0$.
+- Therefore $\frac{f(0)}{f(\Delta)}$ maximizes $B$.
 
 To check that the bound is tight for $\beta \le 1$, we can check it vs. numerical approaches with Google's
 DP accounting library.
@@ -373,3 +375,5 @@ There are a few things we did not explore:
 [^sense]: I believe the statement is true for non-integer $\Delta > 0$, but I don't quite have a proof yet.
 
 [^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
+
+[^todo]: This is kind of handwavy, so consider this a TODO to improve the proof :)
