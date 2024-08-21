@@ -304,9 +304,9 @@ $\epsilon_0/\beta$ in the $\Delta=1$ regime. Interestingly, this is not universa
 satisfying pure DP. 
 - As $a \to \infty$ (and therefore $p \to 1$), the negative binomial approaches the poisson distribution.
     This means that the GDL actually approaches the skellam distribution for large values of $a$! 
-    To make this parameterization private requires $beta \gg 1$. Quantifying this convergence
+    To make this parameterization private requires $\beta \gg 1$. Quantifying this convergence
     would be an interesting follow-up question.
-- For small values of $\Delta$, the hypergeometric term in the theorem statement is very small. The bound
+- For some parameterizations, the hypergeometric term in the theorem statement is very small. The bound
     can be simplified by taking a looser upper bound without its small (negative) contribution.
 - It should be relatively straightforward to translate univariate bounds to multivariate bounds similar to
     the laplace mechanism.
