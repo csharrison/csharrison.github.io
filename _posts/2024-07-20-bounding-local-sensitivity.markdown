@@ -3,6 +3,7 @@ layout: post
 title:  "Privately bounding local sensitivity"
 date:   2024-07-20
 needsmath: true
+tag: privacy
 ---
 
 Typically in differentially private mechanisms, we scale noise proportional to the _global sensitivity_ of the measurement:

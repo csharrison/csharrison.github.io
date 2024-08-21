@@ -3,6 +3,7 @@ layout: post
 title:  "The exponential mechanism"
 date:   2024-07-30
 needsmath: true
+tag: privacy
 ---
 
 The [exponential mechanism](https://en.wikipedia.org/wiki/Exponential_mechanism), introduced by

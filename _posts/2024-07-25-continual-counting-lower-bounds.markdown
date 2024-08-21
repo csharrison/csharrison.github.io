@@ -3,6 +3,7 @@ layout: post
 title:  "Private continual counting and lower bounds"
 date:   2024-07-25
 needsmath: true
+tag: privacy
 ---
 
 In this post, we'll discuss the continual counting problem in differential privacy and outline the proof of the

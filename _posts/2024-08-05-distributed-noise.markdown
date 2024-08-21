@@ -3,6 +3,7 @@ layout: post
 title:  "Distributed noise addition and infinite divisibility"
 date:   2024-08-05
 needsmath: true
+tags: privacy
 ---
 
 Differentially private mechanisms often require their implementions to be _distributed_ across multiple

@@ -3,6 +3,7 @@ layout: post
 title:  "Introduction to differential privacy proofs"
 date:   2024-03-30
 needsmath: true
+tag: privacy
 ---
 
 Differential privacy is a robust, formal notion of privacy. For a friendly introduction, it's difficult to beat

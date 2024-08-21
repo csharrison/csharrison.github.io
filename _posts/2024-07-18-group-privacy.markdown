@@ -3,6 +3,7 @@ layout: post
 title:  "Group privacy"
 date:   2024-07-18
 needsmath: true
+tag: privacy
 ---
 
 Within the context of differential privacy, group privacy is the notion of protecting _groups_ of users, rather than the "standard" notion of privacy which protects a single user. I've always considered this aspect of differential privacy somewhat confusing, especially as it relates to DP composition:

@@ -3,6 +3,7 @@ layout: post
 title:  "Tight RDP and zCDP bounds for RAPPOR"
 date:   2024-08-20
 needsmath: true
+tag: privacy
 ---
 
 We briefly covered the basic RAPPOR mechanism in a [previous post]({% post_url 2024-03-30-intro-to-dp-proofs %}#rappor). We'll copy the example code for reference:
