@@ -194,15 +194,15 @@ better privacy, formally?
 
 Let's try to show something about the privacy loss under this mechanism.
 
-<a id="thm1" href="#thm1">Theorem 1</a>: The univariate GDL with $a = \frac{\epsilon_0}{\Delta}$ mechanism with $\Delta \in \mathbb{N}$ sensitivity[^sense] satisfies differential privacy with  
+<a id="thm1" href="#thm1">Theorem 1</a>: The univariate GDL mechanism with $\Delta \in \mathbb{N}$ sensitivity satisfies differential privacy with  
 
 $$
 \epsilon \le \begin{cases}
-\epsilon_0 + \log \frac {\sideset{_2}{_1}F[\beta; \beta; 1; e^{-2a}]}
+\alpha \Delta + \log \frac {\sideset{_2}{_1}F[\beta; \beta; 1; e^{-2a}]}
     {\sideset{_2}{_1}F[\beta; \beta + \Delta; 1 +\Delta ; e^{-2a}]}
     \frac{\Gamma(\Delta+1)\Gamma(\beta)}{\Gamma(\beta + \Delta)}
     &\text{ if 0 < $\beta \le 1$}\\
-\epsilon_0 & \text{ if $\beta > 1$}
+\alpha \Delta & \text{ if $\beta > 1$}
 \end{cases}
 $$
 
@@ -264,7 +264,7 @@ $$
 We will proceed by showing that $k = \Delta$ maximizes this quantity, and the theorem statement
 follows directly from plugging in $\Delta$ for $k$ above.
 
-Clearly, $A$ is maximized at $a \Delta = \epsilon_0$ when $k \ge \Delta$, so it suffices to show $B$
+Clearly, $A$ is maximized (with value $\alpha \Delta$) when $k \ge \Delta$, so it suffices to show $B$
 is maximized at $k = \Delta$. Informally, $B$ smoothly interpolates between $0$ and $C = \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}{\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)$ as a function of $a$. 
 
 Here are the endpoints:
@@ -285,14 +285,14 @@ $$
 $$
 
 We do know $C$ is maximized at $k=\Delta$ (see [this stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)). We could stop there and say
-$\epsilon \le \epsilon_0 + C$, but this would not be tight. However, we can use a similar approach to show that
+$\epsilon \le \alpha \Delta + C$, but this would not be tight. However, we can use a similar approach to show that
 the quantity $f(x) = \sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |x| +s)}{\Gamma(1 + |x| + s)s!}e^{-2 a s}$ has a single maximum when $x = 0$. Informally[^todo], the result follows from:
 - Noticing for $B = \frac{f(k-\Delta)}{f(k)}$, the numerator and denominator of are translations of each other.
 - $\frac{d^2 f}{d k}$ is negative for $k \lt 0$ and positive for $k \gt 0$.
 - Therefore $\frac{f(0)}{f(\Delta)}$ maximizes $B$.
 
 To check that the bound is tight for $\beta \le 1$, we can check it vs. numerical approaches with Google's
-DP accounting library.
+DP accounting library, where $a = \frac{\epsilon_0}{\Delta}$.
 
 ![Figure 2](/images/gdl-eps.svg)
 
@@ -411,8 +411,6 @@ I'll look into this more closely in a future post.
 
 [^largebeta]: I believe this is tight under pure DP, but it should be possible to show approximate / Renyi DP
     since the distribution will approach the gaussian as $\beta \gg 1$.
-
-[^sense]: I believe the statement is true for non-integer $\Delta > 0$, but I don't quite have a proof yet.
 
 [^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
 
