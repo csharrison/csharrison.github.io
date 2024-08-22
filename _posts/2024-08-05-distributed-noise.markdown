@@ -198,11 +198,11 @@ Let's try to show something about the privacy loss under this mechanism.
 
 $$
 \epsilon \le \begin{cases}
-\alpha \Delta + \log \frac {\sideset{_2}{_1}F[\beta; \beta; 1; e^{-2a}]}
+a \Delta + \log \frac {\sideset{_2}{_1}F[\beta; \beta; 1; e^{-2a}]}
     {\sideset{_2}{_1}F[\beta; \beta + \Delta; 1 +\Delta ; e^{-2a}]}
     \frac{\Gamma(\Delta+1)\Gamma(\beta)}{\Gamma(\beta + \Delta)}
     &\text{ if 0 < $\beta \le 1$}\\
-\alpha \Delta & \text{ if $\beta > 1$}
+a \Delta & \text{ if $\beta > 1$}
 \end{cases}
 $$
 
@@ -264,7 +264,7 @@ $$
 We will proceed by showing that $k = \Delta$ maximizes this quantity, and the theorem statement
 follows directly from plugging in $\Delta$ for $k$ above.
 
-Clearly, $A$ is maximized (with value $\alpha \Delta$) when $k \ge \Delta$, so it suffices to show $B$
+Clearly, $A$ is maximized (with value $a \Delta$) when $k \ge \Delta$, so it suffices to show $B$
 is maximized at $k = \Delta$. Informally, $B$ smoothly interpolates between $0$ and $C = \log \left(\frac{\Gamma(|k|+1)\Gamma(\beta + |k-\Delta|)}{\Gamma(|k- \Delta| + 1)\Gamma(\beta + |k|)}\right)$ as a function of $a$. 
 
 Here are the endpoints:
@@ -285,7 +285,7 @@ $$
 $$
 
 We do know $C$ is maximized at $k=\Delta$ (see [this stackexchange post](https://math.stackexchange.com/questions/4953913/product-of-quotients-of-gamma-functions-bounding-frac-gammay-k-x-g)). We could stop there and say
-$\epsilon \le \alpha \Delta + C$, but this would not be tight. However, we can use a similar approach to show that
+$\epsilon \le a \Delta + C$, but this would not be tight. However, we can use a similar approach to show that
 the quantity $f(x) = \sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |x| +s)}{\Gamma(1 + |x| + s)s!}e^{-2 a s}$ has a single maximum when $x = 0$. Informally[^todo], the result follows from:
 - Noticing for $B = \frac{f(k-\Delta)}{f(k)}$, the numerator and denominator of are translations of each other.
 - $\frac{d^2 f}{d k}$ is negative for $k \lt 0$ and positive for $k \gt 0$.
