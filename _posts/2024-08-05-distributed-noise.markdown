@@ -354,7 +354,7 @@ The colab generating plots can be found [here](https://colab.research.google.com
 There are a few things we did not explore:
 - The continuous analog to the GDL we explored is the difference of Gamma random variables.
     In the limiting case where the Gamma RVs are exponential, this yields the continous laplace
-    distribution. Does the so-called Generalized Continous Laplace (GCL?) satisfy Pure DP?
+    distribution. Does the so-called Generalized Continous Laplace (GCL?) satisfy Pure DP? (See [update](#the-arete-distribution!)
 - There are a number of continous infinitely divisible distributions like like the Cauchy (see [Nissim et al. 2007](https://cs-people.bu.edu/ads22/pubs/NRS07/NRS07-full-draft-v1.pdf))
     or Student's T distribution (see [Bun & Steinke 2019](https://proceedings.neurips.cc/paper_files/paper/2019/file/3ef815416f775098fe977004015c6193-Paper.pdf)) are used when scaling noise by _smooth sensitivity_ of the measurement rather than the global sensitivity[^local]. For an overview of this approach, see section 3.1 of [The Complexity of Differential Privacy](https://privacytools.seas.harvard.edu/files/complexityprivacy_1.pdf) by Vadhan. Given that smooth sensitivity is computed per _dataset_, it seems especially challenging to use in the distributed setting e.g. if no party can see the whole dataset!
 - Under cryptographic multi-party computation (MPC) protocols, it is possible for parties to jointly
@@ -364,6 +364,45 @@ There are a few things we did not explore:
     any interaction (which can also be a component MPC protocols, to be clear).
     See e.g. [Keller et al 2023](https://eprint.iacr.org/2023/1594.pdf) for an example,
     which outlines protocols for many of the distributions we explored here.
+
+##  Update Aug 22, 2024: The Arete distribution and variance-optimized GDL
+
+[Pagh & Stausholm 2022](https://arxiv.org/abs/2110.06559) came up with a very interesting infinitely
+divisible distribution to improve pure DP performance in the low-privacy regime ($\epsilon \gg 1$): the
+Arete distribution. Here's a figure from the paper comparing its density to the Laplace and staircase
+distribution (proposed by [Geng et al 2015](https://pramodv.ece.illinois.edu/pubs/GKOV.pdf)):
+
+![The Arete Distribution](/images/arete.png)
+
+The staircase mechanism outperforms the laplace mechanism in the low privacy regime, and the motivation
+behind the Arete distribution is to match some of the performance characteristics of the staircase mechanism.
+It can be defined as:
+
+$$
+Z = X_1 - X_2 + Y
+$$
+
+Where $X_1, X_2 \sim \Gamma(\alpha, \theta)$ and $Y ~ Laplace(\lambda)$.
+It turns out that just sampling from the difference of $\Gamma$ distributions cannot be private
+when $\alpha < 1$, since there is a singulary at 0. The authors smooth out this singularity by
+adding Laplace noise (which itself is infinitely divisible). Note that while the Arete distribution
+is infinitely divisible, it is not self-decomposable.
+
+Studying the Arete distribution though, I wonder if the GDL with $\beta < 1$ actually has properties similar
+to the staircase mechanism for $\epsilon \gg 1$ and $\Delta > 1$?[^Delta] One quick thing we can check is whether it has exponentially
+decreasing variance with epsilon. The staircase mechanism has variance $O(e^{-2 \epsilon / 3})$, whereas
+the Discrete Laplace with large $\Delta$ has variance approximately $O(1/\epsilon^2)$.
+
+![Variance-optimized GDL](/images/gdl-low-priv.svg)
+
+The above plot optimizes[^opt] the GDL for variance for a given level of $\epsilon$. As you can see,
+we do see an exponential relationship with $\epsilon$ in the low privacy ($\epsilon > 10$) regime!
+In the medium/high privacy regime, the discrete laplace is still optimal, and the GDL just
+uses $\beta = 1$.
+
+Note that the dashed green line is just an "eyeballed" fit curve, but it is suggestive that
+the variance-optimized GDL could have variance $O(e^{-\epsilon})$.
+I'll look into this more closely in a future post.
 
 [^polya]: Note that the generalized negative binomial whose stopping time parameter is a real number
     is often refered to as the Polya distribution, but in this post we just match what scipy does 😂.
@@ -378,3 +417,9 @@ There are a few things we did not explore:
 [^local]: This is a similar approach to the one we explored in the [previous post]({% post_url 2024-07-20-bounding-local-sensitivity %}) on privately bounding local sensitivity.
 
 [^todo]: This is kind of handwavy, so consider this a TODO to improve the proof :)
+
+[^Delta]: It is known that the optimal staircase mechanism in the _discrete_ setting with $\Delta=1$ is the
+    discrete laplace, so we need to look at $\Delta>1$ to find better mechanisms.
+
+[^opt]: I numerically searched for values of $a$ and $\beta$ that minimizes variance subject to
+    the privacy constraint.
