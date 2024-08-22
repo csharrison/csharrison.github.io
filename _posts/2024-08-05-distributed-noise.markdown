@@ -370,7 +370,7 @@ There are a few things we did not explore:
 [Pagh & Stausholm 2022](https://arxiv.org/abs/2110.06559) came up with a very interesting infinitely
 divisible distribution to improve pure DP performance in the low-privacy regime ($\epsilon \gg 1$): the
 Arete distribution. Here's a figure from the paper comparing its density to the Laplace and staircase
-distribution (proposed by [Geng et al 2015](https://pramodv.ece.illinois.edu/pubs/GKOV.pdf)):
+distribution (see [Geng et al 2012](https://arxiv.org/pdf/1212.1186), [Geng et al 2015](https://pramodv.ece.illinois.edu/pubs/GKOV.pdf)):
 
 ![The Arete Distribution](/images/arete.png)
 
