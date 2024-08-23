@@ -400,9 +400,9 @@ we do see an exponential relationship with $\epsilon$ in the low privacy ($\epsi
 In the medium/high privacy regime, the discrete laplace is still optimal, and the GDL just
 uses $\beta = 1$.
 
-Note that the dashed green line is just an "eyeballed" fit curve, but it is suggestive that
-the variance-optimized GDL could have variance $O(e^{-\epsilon})$.
-I'll look into this more closely in a future post.
+I've also plotted variance from the continuous and discrete staircase mechanism. The GDL appears to have
+the same asymptotic behavior ($O(e^{-\epsilon})$) as the discrete staircase (off by about a
+constant factor of 4). This was a pleasant surprise showcasing yet more versatility of the GDL mechanism!
 
 [^polya]: Note that the generalized negative binomial whose stopping time parameter is a real number
     is often refered to as the Polya distribution, but in this post we just match what scipy does 😂.
