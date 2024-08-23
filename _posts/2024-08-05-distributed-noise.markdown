@@ -365,7 +365,7 @@ There are a few things we did not explore:
     See e.g. [Keller et al 2023](https://eprint.iacr.org/2023/1594.pdf) for an example,
     which outlines protocols for many of the distributions we explored here.
 
-##  Update Aug 22, 2024: The Arete distribution and variance-optimized GDL
+##  Update Aug 22, 2024: The Arete distribution and the GDL in the low-privacy regime
 
 [Pagh & Stausholm 2022](https://arxiv.org/abs/2110.06559) came up with a very interesting infinitely
 divisible distribution to improve pure DP performance in the low-privacy regime ($\epsilon \gg 1$): the
