@@ -73,5 +73,19 @@ This is pretty gnarly. Let's plot it to make sure it matches the numeric estimat
 
 ![Variance of the discrete staircase](/images/staircase-variance.svg)
 
-Nice, looks good! If I ever need the general form with $r > 1$ I will update this post with the full formula, but it is very nasty.
+Nice, looks good! If I ever need the general form with $r > 1$. I will update this post with the full formula.
+Right now it is too nasty for me to want to write down.
 
+For now let's just conclude with some asymptotics. In the previous post I mentioned that this is $O(e^{-\epsilon})$ variance.
+Taking the limit shows that indeed:
+
+$$
+\lim_{\epsilon->\infty} E[X^2] e^{\epsilon} = \frac{1}{3}\Delta (1 + \Delta) (1 + 2\Delta)
+$$
+
+So the variance is $\Theta(\Delta^3 e^{-\epsilon})$. From the plots it appears we approach this
+limiting behavior quickly for small $\Delta$. Let's see this more clearly by plotting the limiting behavior:
+
+![Asymptotic variance of the discrete staircase](/images/staircase-variance-asym.svg)
+
+It is fascinating to see a cubic relationship with $\Delta$!
