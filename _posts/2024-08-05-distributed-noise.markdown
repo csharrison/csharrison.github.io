@@ -288,8 +288,10 @@ We do know $C$ is maximized at $k=\Delta$ (see [this stackexchange post](https:/
 $\epsilon \le a \Delta + C$, but this would not be tight. However, we can use a similar approach to show that
 the quantity $f(x) = \sum_{s=0}^\infty \frac{\Gamma(\beta+s)\Gamma(\beta + |x| +s)}{\Gamma(1 + |x| + s)s!}e^{-2 a s}$ has a single maximum when $x = 0$. Informally[^todo], the result follows from:
 - Noticing for $B = \frac{f(k-\Delta)}{f(k)}$, the numerator and denominator of are translations of each other.
-- $\frac{d^2 f}{d k}$ is negative for $k \lt 0$ and positive for $k \gt 0$.
-- Therefore $\frac{f(0)}{f(\Delta)}$ maximizes $B$.
+- $f(-x) = f(x)$
+- $f$ is maximized at 0, and is convex and decreasing on the interval $[0, \infty)$.
+
+Therefore $\frac{f(x)}{f(x + \Delta)} \le \frac{f(0)}{f(\Delta)}$.
 
 To check that the bound is tight for $\beta \le 1$, we can check it vs. numerical approaches with Google's
 DP accounting library, where $a = \frac{\epsilon_0}{\Delta}$.
