@@ -58,7 +58,7 @@ def kary_rr(value: Any, possible_outputs: Set[Any], epsilon: float) -> Any:
   possible_outputs: a set of possible outputs of the mechanism
   epsilon: the privacy loss parameter.
   """
-
+  k = len(possible_outputs)
   p = k / (k - 1 + math.exp(epsilon))
   assert value in possible_outputs
   if random.random() <= p:
