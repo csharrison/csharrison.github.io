@@ -20,7 +20,18 @@
   {% if page.needsmath %}
   <script>
     MathJax = {
-      tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        macros: {
+          Bin: ["\\operatorname\{Bin\}"],
+          Bern: ["\\operatorname\{Bern\}"],
+          NB: ["\\operatorname\{NB\}"],
+          Poi: ["\\operatorname\{Poi\}"],
+          Beta: ["\\operatorname\{Beta\}"],
+          Geo: ["\\operatorname\{Geo\}"],
+          B: ["\\operatorname\{B\}"],
+        }
+      },
       svg: { fontCache: 'global' }
     };
   </script>
