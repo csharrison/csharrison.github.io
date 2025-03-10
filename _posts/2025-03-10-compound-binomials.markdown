@@ -186,7 +186,7 @@ of _all_ $X_1 + \cdots + X_n$ conditioned on their sum.
 In this section we'll explore a related concept to binomial thinning, which we'll call _splitting_. We will consider the
 two-dimensional random variable $(X, Y)$, where $X \sim \Bin(N, p)$ and $ Y \sim N - X$. In other words, we will have a
 process which classifies each value in $N$ into the first index with probability $p$, and the second index otherwise.
-Note that this is a special case of the (compound) [multinomial distribution](https://en.wikipedia.org/wiki/Multinomial_distribution).
+Note that this is a special case of the (compound) [multinomial distribution](https://en.wikipedia.org/wiki/Multinomial_distribution).[^mult]
 
 For the most part, we can't say anything too meaningful about splitting a distribution in this way. In general, $X$ and $Y$
 will be correlated in some way (i.e. learning something about $X$ tells you something about $Y$), making the split distribution
@@ -264,3 +264,5 @@ it certainly can't be 0, otherwise, $\log(G_N(z+1)) = 0$ and therefore $G_N(z) =
 So where does that leave us? Well if $g(z) = \lambda z$, then $e^{g(z)} = G_N(z+1) = e^{\lambda z}$, so $G_N(z) = e^{\lambda (z-1)}$, which indeed is the PGF for the Poisson distribution! This tells us that the _independence_ of the two random variables
 from binomial splitting uniquely characterizes the Poisson distribution. There aren't any other distributions with this
 property!
+
+[^mult]: Some online references claim that the binomial distribution is equivalent to the multinomial distribution in two dimensions, but I think this is a little misleading because the binomial distribution does not model the "leftover" mass from the failed trials. It only outputs the number of successful trials (even though the leftover mass can be computed exactly given the output of the binomial distribution).
