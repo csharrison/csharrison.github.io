@@ -6,7 +6,7 @@ needsmath: true
 tag: privacy
 ---
 
-This a follow-up to a [my previous post]({% post_url 2024-08-05-distributed-noise %}) about infinitely divisible noise addition. There, I outlined the privacy guarantee of the difference of two negative binomial random variables, called
+This a follow-up to [my previous post]({% post_url 2024-08-05-distributed-noise %}) about infinitely divisible noise addition. There, I outlined the privacy guarantee of the difference of two negative binomial random variables, called
 the generalized discrete Laplace (GDL) distribution.
 
 My colleague Pasin Manurangsi and I expanded on this result in a new paper accepted to FORC '25:
